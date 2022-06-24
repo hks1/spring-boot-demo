@@ -19,10 +19,18 @@ import javax.swing.text.html.parser.Entity;
 
 @RestController
 public class EmployeeController {
+
     private final EmployeeRepository repository;
 
-    EmployeeController(EmployeeRepository repository){
+    private final EmployeeModelAssembler assembler;
+
+    /*EmployeeController(EmployeeRepository repository){
         this.repository = repository;
+    }*/
+
+    EmployeeController(EmployeeRepository repository, EmployeeModelAssembler assembler){
+        this.repository = repository;
+        this.assembler = assembler;
     }
 
     // Aggregate root
@@ -34,7 +42,7 @@ public class EmployeeController {
     }
 
      */
-    CollectionModel<EntityModel<Employee>> all(){
+    /*CollectionModel<EntityModel<Employee>> all(){
         List<EntityModel<Employee>> employees = repository.findAll()
                 .stream()
                 .map(employee -> EntityModel.of(employee,
@@ -44,7 +52,17 @@ public class EmployeeController {
 
         return CollectionModel.of(employees,
                 linkTo(methodOn(EmployeeController.class).all()).withSelfRel());
+    }*/
+    // Using EmployeeModelAssembler
+    CollectionModel<EntityModel<Employee>> all(){
+        List<EntityModel<Employee>> employees = repository.findAll().stream()
+                .map(assembler::toModel)
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(employees,
+                linkTo(methodOn(EmployeeController.class).all()).withSelfRel());
     }
+    // A key design goal of Spring HATEOAS is to make it easier to do The Right Thing™. In this scenario: adding hypermedia to your service without hard coding a thing.
     // end::get-aggregate-root
 
     @PostMapping("/employees")
@@ -67,9 +85,11 @@ public class EmployeeController {
         Employee employee = repository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id));
 
-        return EntityModel.of(employee,
+        /*return EntityModel.of(employee,
                 linkTo(methodOn(EmployeeController.class).one(id)).withSelfRel(),
-                linkTo(methodOn(EmployeeController.class).all()).withRel("employees"));
+                linkTo(methodOn(EmployeeController.class).all()).withRel("employees"));*/
+        // after adding EmployeeAssembler
+        return assembler.toModel(employee);
     }
 
     @PutMapping("/employees/{id}")

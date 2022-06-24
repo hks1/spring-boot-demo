@@ -19,3 +19,7 @@ public class EmployeeModelAssembler implements RepresentationModelAssembler<Empl
 /*
 This simple interface has one method: toModel(). It is based on converting a non-model object (Employee) into a model-based object (EntityModel<Employee>).
  */
+
+/*
+Spring HATEOAS’s abstract base class for all models is RepresentationModel. But for simplicity, I recommend using EntityModel<T> as your mechanism to easily wrap all POJOs as models.
+ */

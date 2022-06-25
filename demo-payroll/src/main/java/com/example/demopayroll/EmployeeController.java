@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.ResponseEntity;
 
 import javax.swing.text.html.parser.Entity;
 
@@ -66,8 +68,22 @@ public class EmployeeController {
     // end::get-aggregate-root
 
     @PostMapping("/employees")
-    Employee newEmployee(@RequestBody Employee newEmployee){
+    /*Employee newEmployee(@RequestBody Employee newEmployee){
         return repository.save(newEmployee);
+    }*/
+    /*
+    The new Employee object is saved as before. But the resulting object is wrapped using the EmployeeModelAssembler.
+
+Spring MVC’s ResponseEntity is used to create an HTTP 201 Created status message. This type of response typically includes a Location response header, and we use the URI derived from the model’s self-related link.
+
+Additionally, return the model-based version of the saved object.
+     */
+    ResponseEntity<?> newEmployee(@RequestBody Employee newEmployee){
+        EntityModel<Employee> entityModel = assembler.toModel(repository.save(newEmployee));
+
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
     }
 
     // single item
@@ -93,7 +109,7 @@ public class EmployeeController {
     }
 
     @PutMapping("/employees/{id}")
-    Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id){
+    /*Employee replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id){
         return repository.findById(id)
                 .map(employee -> {
                     employee.setName(newEmployee.getName());
@@ -104,11 +120,32 @@ public class EmployeeController {
                     newEmployee.setId(id);
                     return repository.save(newEmployee);
                 });
+    }*/
+    ResponseEntity<?> replaceEmployee(@RequestBody Employee newEmployee, @PathVariable Long id){
+        Employee updatedEmployee = repository.findById(id)
+                .map(employee -> {
+                    employee.setName(newEmployee.getName());
+                    employee.setRole(newEmployee.getRole());
+                    return repository.save(employee);
+                })
+                .orElseGet(() -> {
+                    newEmployee.setId(id);
+                    return repository.save(newEmployee);
+                });
+        EntityModel<Employee> entityModel = assembler.toModel(updatedEmployee);
+
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
     }
 
     @DeleteMapping("/employees/{id}")
-    void deleteEmployee(@PathVariable Long id){
+    /*void deleteEmployee(@PathVariable Long id){
         repository.deleteById(id);
+    }*/
+    ResponseEntity<?> deleteEmployee(@PathVariable Long id){
+        repository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
 
@@ -119,3 +156,11 @@ public class EmployeeController {
 // curl -X PUT localhost:8080/employees/3 -H 'Content-type:application/json' -d '{"name": "Samwise Gamgee", "role": "ring bearer"}'
 
 // curl -X DELETE localhost:8080/employees/5
+
+// curl -v -X POST localhost:8080/employees -H 'Content-Type:application/json' -d '{"name": "Samwise Gamgee", "role": "gardener"}'
+
+// curl -v -X POST localhost:8080/employees -H 'Content-Type:application/json' -d '{"name": "Samwise Gamgee", "role": "gardener"}'
+
+// curl -v -X PUT localhost:8080/employees/3 -H 'Content-Type:application/json' -d '{"name": "Samwise Gamgee", "role": "ring bearer"}'
+
+// curl -v -X DELETE localhost:8080/employees/1

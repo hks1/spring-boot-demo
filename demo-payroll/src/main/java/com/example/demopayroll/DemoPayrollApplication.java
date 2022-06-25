@@ -13,3 +13,7 @@ public class DemoPayrollApplication {
 	}
 
 }
+
+/*
+curl -v -X DELETE localhost:8080/employees/1
+ */

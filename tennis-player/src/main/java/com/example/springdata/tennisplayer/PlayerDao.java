@@ -49,4 +49,18 @@ public class PlayerDao {
                 });
     }
 
+    public int updatePlayer(Player player){
+        String sql = "UPDATE PLAYER " +
+                "SET Name = ?, Nationality = ?, Birth_Date = ?, Titles = ? " +
+                "WHERE ID = ?";
+
+        return jdbcTemplate.update(sql, new Object[] {
+                player.getName(),
+                player.getNationality(),
+                player.getBirthDate(),
+                player.getTitles(),
+                player.getId()
+        });
+    }
+
 }

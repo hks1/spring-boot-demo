@@ -1,7 +1,11 @@
 package com.example.springdata.tennisplayer;
 
 import org.springframework.stereotype.Repository;
-import org.springframework.beans.factory.annotations.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.util.List;
 
@@ -12,11 +16,25 @@ public class PlayerDao {
     @Autowired
     JdbcTemplate jdbcTemplate;
 
-    // A  is used to match the data coming from the database to the attributes of the bean.
+    // A row mapper is used to match the data coming from the database to the attributes of the bean.
     // The BeanPropertyRowMapper is the default row mapper defined by Spring.
     public List<Player> getAllPlayer(){
         String sql = "SELECT * FROM PLAYER";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Player>(Player.class))
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Player>(Player.class));
+    }
+
+    // Select with a WHERE clause
+    public Player getPlayerById(int id){
+        String sql = "SELECT * FROM PLAYER WHERE ID = ?";
+
+        //If we search by the primary key, we will get one row back.
+        // In this case, instead of using the query method, we will use the queryForObject method of JdbcTemplate.
+        // This method accepts a list of parameters.
+        // We will create a list of objects and pass it to the method.
+        // The parameter id will be substituted in the query and a Player object is returned.
+        return jdbcTemplate.queryForObject(sql,
+                new BeanPropertyRowMapper<Player>(Player.class),
+                new Object[] {id});
     }
 
 }

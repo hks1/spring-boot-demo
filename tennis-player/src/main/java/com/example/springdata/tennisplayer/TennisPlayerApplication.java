@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 
+import java.sql.Date;
+
 //A CommandLineRunner is an interface in Spring Boot which has only one method called run.
 // This method is launched as soon as the context is loaded.
 
@@ -28,8 +30,17 @@ public class TennisPlayerApplication implements CommandLineRunner{
 
 	@Override
 	public void run(String... args) throws Exception{
-		//logger.info("All Players Data: {}", dao.getAllPlayer());
-		logger.info("Player with Id 3: {}", dao.getPlayerById(3));
+		logger.info("Inserting Player 4: {}", dao.insertPlayer(
+				new Player(
+						4,
+						"Thiem",
+						"Austria",
+						new Date(System.currentTimeMillis()),
+						17
+				)
+		));
+		logger.info("All Players Data: {}", dao.getAllPlayer());
+		//logger.info("Player with Id 3: {}", dao.getPlayerById(3));
 	}
 
 }

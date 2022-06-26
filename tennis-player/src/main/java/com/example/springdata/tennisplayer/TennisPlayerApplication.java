@@ -58,6 +58,9 @@ public class TennisPlayerApplication implements CommandLineRunner{
 
 		// View player by Id
 		logger.info("Player with Id 4: {}", dao.getPlayerById(4));
+
+		// create Tournament table
+		dao.createTournamentTable();
 	}
 
 }

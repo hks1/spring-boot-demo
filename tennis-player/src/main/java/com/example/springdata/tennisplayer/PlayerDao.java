@@ -68,4 +68,12 @@ public class PlayerDao {
         return jdbcTemplate.update(sql, new Object[] {id});
     }
 
+    // Create table query
+    public void createTournamentTable(){
+        String sql = "CREATE TABLE TOURNAMENT " +
+                "(ID INTEGER, NAME VARCHAR(50), LOCATION VARCHAR(50), PRIMARY KEY (ID))";
+        jdbcTemplate.execute(sql);
+        System.out.println("Table created");
+    }
+
 }

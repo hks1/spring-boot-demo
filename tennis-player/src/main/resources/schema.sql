@@ -6,3 +6,6 @@ CREATE TABLE Player (
      Titles INTEGER,
      PRIMARY KEY (ID)
   );
+
+  # /usr/local/mysql/bin/mysql -u root -p
+  # create database springbootdemo;

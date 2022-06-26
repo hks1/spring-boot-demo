@@ -61,6 +61,9 @@ public class TennisPlayerApplication implements CommandLineRunner{
 
 		// create Tournament table
 		dao.createTournamentTable();
+
+		// using custom row mapper
+		logger.info("French Players: {}", dao.getPlayerByNationality("Austria"));
 	}
 
 }

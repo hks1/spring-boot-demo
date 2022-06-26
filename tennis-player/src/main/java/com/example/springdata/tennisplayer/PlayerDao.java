@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -74,6 +76,39 @@ public class PlayerDao {
                 "(ID INTEGER, NAME VARCHAR(50), LOCATION VARCHAR(50), PRIMARY KEY (ID))";
         jdbcTemplate.execute(sql);
         System.out.println("Table created");
+    }
+
+    // RowMapper interface
+    // custom row mapper
+    //The custom row mapper, PlayerMapper is created as an inner class because it will only be used inside JdbcPlayerDao.
+    // It is best practice to make it static and final.
+    //The PlayerMapper class is reusable and can be used in all methods of the PlayerDao class to map rows from the Player table to the Player bean.
+    private static final class PlayerMapper implements RowMapper<Player>{
+
+        //The Rowmapper interface has one method, mapRow, for which we will write our custom implementation to initialize a Player object.
+        //This method defines how a row is mapped.
+        // It takes two arguments, the first being the result set which JdbcTemplate gets after running the query and the second being the row number.
+        //To use PlayerMapper, we can simply pass it in any method instead of the BeanPropertyRowMapper.
+        @Override
+        public Player mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+            Player player = new Player();
+            player.setId(resultSet.getInt("Id"));
+            player.setName(resultSet.getString("Name"));
+            player.setNationality(resultSet.getString("Nationality"));
+            player.setBirthDate(resultSet.getTime("Birth_Date"));
+            player.setTitles(resultSet.getInt("Titles"));
+            return player;
+        }
+
+
+
+    }
+
+    //method to find players based on their nationality
+    // using our custom mapper to convert the result set to objects as follows:
+    public List<Player> getPlayerByNationality(String nationality){
+        String sql = "SELECT * FROM PLAYER WHERE Nationality = ?";
+        return jdbcTemplate.query(sql, new PlayerMapper(), new Object[] {nationality});
     }
 
 }

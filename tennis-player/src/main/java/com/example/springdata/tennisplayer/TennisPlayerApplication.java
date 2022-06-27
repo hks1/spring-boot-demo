@@ -14,7 +14,8 @@ import java.sql.Date;
 //A CommandLineRunner is an interface in Spring Boot which has only one method called run.
 // This method is launched as soon as the context is loaded.
 
-@SpringBootApplication
+// commented
+//@SpringBootApplication
 public class TennisPlayerApplication implements CommandLineRunner{
 
 	//logger will display the list of players returned

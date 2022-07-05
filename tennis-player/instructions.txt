@@ -1,0 +1,29 @@
+## sonar ##
+run sonarqube (docker) [localhost:9000]
+Edit the settings.xml file, located in $MAVEN_HOME/conf or ~/.m2, to set the plugin prefix and optionally the SonarQube server URL.
+https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/
+
+set JAVA_HOME
+mvn clean install
+mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar -Dsonar.login="XXX" -Dsonar.password="XXX"
+
+sample output:
+[INFO] ANALYSIS SUCCESSFUL, you can find the results at: http://localhost:9000/dashboard?id=com.example.springdata%3Atennis-player
+[INFO] Note that you will be able to access the updated dashboard once the server has processed the submitted analysis report
+[INFO] More about the report processing at http://localhost:9000/api/ce/task?id=AYGljuKT7QPmy9dpGuba
+
+## RUN maven ##
+mvn spring-boot:run
+
+
+## RUN maven JAR ##
+mvn clean compile package
+java -jar target/mvn-example-1.0-SNAPSHOT.jar
+e.g. java -jar target/tennis-player-0.0.1-SNAPSHOT.jar
+
+## MySql ##
+switch user: (calling an OS shell command from MySQL prompt.)
+mysql> SYSTEM mysql -u demouser -p
+
+
+

@@ -1,0 +1,7 @@
+https://stackoverflow.com/questions/27767264/how-to-dockerize-maven-project-and-how-many-ways-to-accomplish-it
+# Build the image
+docker build -t demo-payroll .
+
+# Run the image
+--docker run --rm -it demo-payroll:latest // port 8080 is not accessible from machine, need to map the port as in following command
+docker run --rm -it -p 8080:8080 demo-payroll:latest

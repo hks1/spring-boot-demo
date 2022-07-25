@@ -7,5 +7,5 @@ CREATE TABLE Player (
      PRIMARY KEY (ID)
   );
 
-  # /usr/local/mysql/bin/mysql -u root -p
-  # create database springbootdemo;
+ // # /usr/local/mysql/bin/mysql -u root -p
+  //# create database springbootdemo;
